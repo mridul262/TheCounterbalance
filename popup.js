@@ -15,6 +15,16 @@ const articleForRequest = (articleName) => {
   return '&q=' + newString;
 };
 
+const setDataToCard = (data) => {
+  document.querySelector('.card').href = data.articles[0].url;
+  document.querySelector('.card__title').innerHTML = data.articles[0].title;
+  document.querySelector('.card__site').innerHTML = data.articles[0].author;
+  document.querySelector('.card__preview').innerHTML = data.articles[0].content;
+  document.querySelector(
+    '.card__image'
+  ).style.backgroundImage = `url('${data.articles[0].urlToImage}')`;
+};
+
 const apiRequest = (articleRequest) => {
   const requestOptions = {
     method: 'GET',
@@ -25,11 +35,9 @@ const apiRequest = (articleRequest) => {
   fetch(newsAPI + articleRequest, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      jsonResponse = data;
-      console.log('inside data', data);
+      data && setDataToCard(data);
+      // console.log('inside data', data);
     });
-
-  return jsonResponse;
 };
 
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -38,10 +46,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     { message: 'initialise', activeTab },
     (response) => {
       // console.log(response.articleName);
-      response.urlKey && setTag('sourceName', response.urlKey);
-      response.urlLeaning && setTag('leaning', response.urlLeaning);
-      let jsonResponse = apiRequest(articleForRequest(response.articleName));
-      console.log(jsonResponse);
+      // response.urlKey && setTag('sourceName', response.urlKey);
+      response.urlLeaning && setTag('title', response.urlLeaning);
+      apiRequest(articleForRequest(response.articleName));
+      // console.log(jsonResponse);
     }
   );
 });
