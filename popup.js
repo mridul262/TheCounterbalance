@@ -7,6 +7,11 @@ const setTag = (id, content) => {
 
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   const activeTab = tabs[0];
+  let articleName;
+  chrome.runtime.sendMessage({ message: 'getArticleName' }, (response) => {
+    articleName = response;
+    console.log(articleName);
+  });
   chrome.runtime.sendMessage(
     { message: 'initialise', activeTab },
     (response) => {
@@ -16,10 +21,3 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     }
   );
 });
-
-// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-//   if (request.message === 'urlData') {
-//     // console.log(request.urlLeaning);
-//     console.log('hellolololo');
-//   }
-// });
