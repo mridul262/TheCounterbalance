@@ -1,7 +1,7 @@
-const setLeaningsTag = (content) => {
+const setTag = (id, content) => {
   console.log('Step 4');
-  const leaningsTag = document.getElementById('leaning');
-  leaningsTag.innerHTML = content;
+  const htmlTag = document.getElementById(id);
+  htmlTag.innerHTML = content;
   console.log('Inner HTML set');
 };
 
@@ -11,6 +11,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     { message: 'initialise', activeTab },
     (response) => {
       console.log(response.urlLeaning);
+      response.urlKey && setTag('sourceName', response.urlKey);
+      response.urlLeaning && setTag('leaning', response.urlLeaning);
     }
   );
 });

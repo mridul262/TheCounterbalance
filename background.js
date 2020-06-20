@@ -1,7 +1,7 @@
 const nameToLeanings = {
-  'bbc.com': 'left',
-  'cnn.com': 'left',
-  'foxnews.com': 'right',
+  'bbc.com': 'Left',
+  'cnn.com': 'Left',
+  'foxnews.com': 'Right',
 };
 const leaningsToName = { left: ['bbc.com', 'cnn.com'], right: ['foxnews.com'] };
 
