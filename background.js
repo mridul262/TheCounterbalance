@@ -13,13 +13,12 @@ const urlObject = (dataObject) => {
 
   return urlArray;
 };
+
 chrome.webNavigation.onCompleted.addListener(
-  () => {
-    chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-      console.warn('Counterbalance Extension: ', tabs[0]);
-    });
+  (details) => {
+    console.log(details.url);
   },
   {
-    url: [{ hostSuffix: 'bbc.com' }], //urlObject(nameToLeanings),
+    url: [{ hostContains: 'bbc.com' }], //urlObject(nameToLeanings),
   }
 );
