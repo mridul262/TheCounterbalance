@@ -14,6 +14,14 @@ const urlObject = (dataObject) => {
   return urlArray;
 };
 
+let articleName;
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message === 'getArticleName') {
+    articleName = request.articleTitle;
+    sendResponse('success');
+  }
+});
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'initialise') {
     console.log(request.activeTab.url);
@@ -28,6 +36,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       message: 'urlData',
       urlKey,
       urlLeaning: nameToLeanings[urlKey],
+      articleName,
     };
     sendResponse(data);
     // chrome.runtime.sendMessage(data);
