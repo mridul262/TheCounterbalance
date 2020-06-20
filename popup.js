@@ -10,8 +10,9 @@ const newsAPI =
 
 // Returns a string
 const articleForRequest = (articleName) => {
-  articleName = articleName.replace(/[^a-zA-Z ]/g, '+').replace(/' '/, '');
-  return '&q=' + articleName;
+  const newString = articleName.replace(/\s/g, '+').replace(/[^+a-zA-Z ]/g, '');
+  // console.log('v1: ', newString);
+  return '&q=' + newString;
 };
 
 const apiRequest = (articleRequest) => {
@@ -20,9 +21,15 @@ const apiRequest = (articleRequest) => {
     redirect: 'follow',
   };
   console.log('reqQuery: ', articleRequest);
+  let jsonResponse;
   fetch(newsAPI + articleRequest, requestOptions)
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => {
+      jsonResponse = data;
+      console.log('inside data', data);
+    });
+
+  return jsonResponse;
 };
 
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -30,10 +37,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   chrome.runtime.sendMessage(
     { message: 'initialise', activeTab },
     (response) => {
-      // console.log(response.urlLeaning);
+      // console.log(response.articleName);
       response.urlKey && setTag('sourceName', response.urlKey);
       response.urlLeaning && setTag('leaning', response.urlLeaning);
-      apiRequest(articleForRequest(response.articleName));
+      let jsonResponse = apiRequest(articleForRequest(response.articleName));
+      console.log(jsonResponse);
     }
   );
 });
