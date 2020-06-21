@@ -1,10 +1,56 @@
 const nameToLeanings = {
   'bbc.com': 'Left-leaning',
   'cnn.com': 'Left-leaning',
+  'bloomberg.com': 'Left-leaning',
+  'bleacherreport.com': 'Left-leaning',
+  'bbc-sport': 'Left-leaning',
+  'theguardian.com': 'Left-leaning',
+  'independent.co.uk': 'Left-leaning',
+  'mirror.co.uk': 'Left-leaning',
+  'hindustantimes.com': 'Left-leaning',
+  'nytimes.com': 'Left-leaning',
+  'aljazeera.com': 'Left-leaning',
   'foxnews.com': 'Right-leaning',
+  'telegraph.co.uk': 'Right-leaning',
+  'express.co.uk': 'Right-leaning',
+  'dailymail.co.uk': 'Right-leaning',
+  'thesun.co.uk': 'Right-leaning',
+  'timesofindia.indiatimes.com': 'Right-leaning',
+  'newscientist.com': 'Left-leaning',
 };
 
-const leaningsToName = { left: ['bbc.com', 'cnn.com'], right: ['foxnews.com'] };
+const leaningsToName = {
+  left: [
+    'BBC News',
+    // 'bbc-news',
+    'CNN',
+    // 'cnn',
+    'Al Jazeera English',
+    // 'al-jazeera-english',
+    // 'bleacher-report',
+    'Bleacher Report',
+    'bloomberg',
+    'bbc-sport',
+    'The Guardian',
+    'independent',
+    'Mirror Online',
+    'Hindustan Times',
+    'New York Times',
+    'New Scientist',
+  ],
+  right: [
+    'Telegraph.co.uk',
+    'Express',
+    'Daily Mail',
+    'The Sun',
+    // 'the-american-conservative',
+    'The American Conservative',
+    'Fox News',
+    // 'fox-news',
+    'The Times of India',
+    // 'the-times-of-india',
+  ],
+};
 
 const urlObject = (dataObject) => {
   const urlArray = [];

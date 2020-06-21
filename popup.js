@@ -1,3 +1,57 @@
+const nameToLeanings = {
+  'bbc.com': 'Left-leaning',
+  'cnn.com': 'Left-leaning',
+  'bloomberg.com': 'Left-leaning',
+  'bleacherreport.com': 'Left-leaning',
+  'bbc-sport': 'Left-leaning',
+  'theguardian.com': 'Left-leaning',
+  'independent.co.uk': 'Left-leaning',
+  'mirror.co.uk': 'Left-leaning',
+  'hindustantimes.com': 'Left-leaning',
+  'nytimes.com': 'Left-leaning',
+  'aljazeera.com': 'Left-leaning',
+  'foxnews.com': 'Right-leaning',
+  'telegraph.co.uk': 'Right-leaning',
+  'express.co.uk': 'Right-leaning',
+  'dailymail.co.uk': 'Right-leaning',
+  'thesun.co.uk': 'Right-leaning',
+  'timesofindia.indiatimes.com/': 'Right-leaning',
+  'newscientist.com': 'Left-leaning',
+};
+
+const leaningsToName = {
+  left: [
+    'BBC News',
+    // 'bbc-news',
+    'CNN',
+    // 'cnn',
+    'Al Jazeera English',
+    // 'al-jazeera-english',
+    // 'bleacher-report',
+    'Bleacher Report',
+    'bloomberg',
+    'bbc-sport',
+    'The Guardian',
+    'independent',
+    'Mirror Online',
+    'Hindustan Times',
+    'New York Times',
+    'New Scientist',
+  ],
+  right: [
+    'Telegraph.co.uk',
+    'Express',
+    'Daily Mail',
+    'The Sun',
+    // 'the-american-conservative',
+    'The American Conservative',
+    'Fox News',
+    // 'fox-news',
+    'The Times of India',
+    // 'the-times-of-india',
+  ],
+};
+
 const setTag = (id, content) => {
   const htmlTag = document.getElementById(id);
   htmlTag.innerHTML = content;
@@ -56,23 +110,35 @@ const makeCard = (data) => {
   return card;
 };
 
-const createCards = (data) => {
+const createCards = (data, urlLeaning) => {
   const container = document.getElementById('container');
+
   for (const cardData of data.articles) {
-    container.appendChild(makeCard(cardData));
+    // Check leanings of articles and filter responses
+    if (
+      urlLeaning === 'Left-leaning' &&
+      leaningsToName.right.includes(cardData.source.name)
+    ) {
+      container.appendChild(makeCard(cardData));
+    } else if (
+      urlLeaning === 'Right-leaning' &&
+      leaningsToName.left.includes(cardData.source.name)
+    ) {
+      container.appendChild(makeCard(cardData));
+    }
   }
 };
 
-const apiRequest = (articleRequest) => {
+const apiRequest = (articleRequest, urlLeaning) => {
   const requestOptions = {
     method: 'GET',
     redirect: 'follow',
   };
-  let jsonResponse;
+  // let jsonResponse;
   fetch(newsAPI + articleRequest, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      data && createCards(data);
+      data && createCards(data, urlLeaning);
     });
 };
 
@@ -88,7 +154,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (response.articleName) {
           document.getElementById('description').textContent =
             'Take a look at the other side.';
-          apiRequest(getArticleForRequest(response.articleName));
+          apiRequest(
+            getArticleForRequest(response.articleName),
+            response.urlLeaning
+          );
         } else {
           document.getElementById('description').textContent =
             "Can't find alternate news sites. Try searching on google.";
