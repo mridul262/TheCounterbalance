@@ -6,6 +6,12 @@ const nameToLeanings = {
 
 const leaningsToName = { left: ['bbc.com', 'cnn.com'], right: ['foxnews.com'] };
 
+const iconPath = {
+  'Left-leaning': './assets/left-leaning-128.png',
+  'Right-leaning': './assets/right-leaning-128.png',
+  'invalid': './assets/invalid-128.png',
+};
+
 const urlObject = (dataObject) => {
   const urlArray = [];
   for (i of Object.keys(dataObject)) {
@@ -13,6 +19,16 @@ const urlObject = (dataObject) => {
   }
 
   return urlArray;
+};
+
+const findUrlKey = (url) => {
+  for (key of Object.keys(nameToLeanings)) {
+    if (url.includes(key)) {
+      return key;
+    }
+  }
+
+  return '';
 };
 
 let articleName;
@@ -25,19 +41,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'initialise') {
-    let urlKey;
-    for (i of Object.keys(nameToLeanings)) {
-      if (request.activeTab.url.includes(i)) {
-        urlKey = i;
-        break;
-      }
-    }
+    const urlKey = findUrlKey(request.activeTab.url);
+
     const data = {
       message: 'urlData',
       urlKey,
       urlLeaning: nameToLeanings[urlKey],
       articleName,
     };
+
     sendResponse(data);
+  }
+});
+
+chrome.webNavigation.onCompleted.addListener(({ url }) => {
+  const urlKey = findUrlKey(url);
+
+  if (urlKey) {
+    const urlLeaning = nameToLeanings[urlKey];
+    chrome.browserAction.setIcon({ path: iconPath[urlLeaning] });
+  } else {
+    chrome.browserAction.setIcon({ path: iconPath['invalid'] });
   }
 });
