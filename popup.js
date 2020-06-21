@@ -1,28 +1,68 @@
 const setTag = (id, content) => {
-  // console.log('Step 4');
   const htmlTag = document.getElementById(id);
   htmlTag.innerHTML = content;
-  // console.log('Inner HTML set');
 };
 
 const newsAPI =
   'https://newsapi.org/v2/everything?apiKey=d0d45c60aee349b79ffe4ad3029d56f9';
 
 // Returns a string
-const articleForRequest = (articleName) => {
+const getArticleForRequest = (articleName) => {
   const newString = articleName.replace(/\s/g, '+').replace(/[^+a-zA-Z ]/g, '');
-  // console.log('v1: ', newString);
   return '&q=' + newString;
 };
 
-const setDataToCard = (data) => {
-  document.querySelector('.card').href = data.articles[0].url;
-  document.querySelector('.card__title').innerHTML = data.articles[0].title;
-  document.querySelector('.card__site').innerHTML = data.articles[0].author;
-  document.querySelector('.card__preview').innerHTML = data.articles[0].content;
-  document.querySelector(
-    '.card__image'
-  ).style.backgroundImage = `url('${data.articles[0].urlToImage}')`;
+const makeCard = (data) => {
+  const card = document.createElement('a');
+  card.className = 'card';
+  card.href = data.url;
+  card.target = '_blank';
+  card.rel = 'noopener noreferrer'; 
+  
+
+  const makeCardImage = () => {
+    const cardImage = document.createElement('div');
+    cardImage.className = 'card__image';
+    cardImage.style.backgroundImage = `url('${data.urlToImage}')`;
+    return cardImage;
+  };
+  
+  const makeCardContent = () => {
+    const cardContent = document.createElement('div');
+    cardContent.className = 'card__content';
+  
+    const cardTitle = document.createElement('h3');
+    cardTitle.className = 'card__title card__overflow-hidden';
+    cardTitle.textContent = data.title;
+  
+    const cardSite = document.createElement('p');
+    cardSite.className = 'card__site card__overflow-hidden';
+    console.log(data);
+
+    cardSite.textContent = data.author;
+  
+    const cardPreview = document.createElement('p');
+    cardPreview.className = 'card__preview';
+    cardPreview.textContent = data.content;
+  
+    cardContent.appendChild(cardTitle);
+    cardContent.appendChild(cardSite);
+    cardContent.appendChild(cardPreview);
+  
+    return cardContent;
+  }
+
+  card.appendChild(makeCardImage());
+  card.appendChild(makeCardContent());
+
+  return card;
+}
+
+const createCards = (data) => {
+  const container = document.getElementById('container');
+  for (const cardData of data.articles) {
+    container.appendChild(makeCard(cardData))
+  }
 };
 
 const apiRequest = (articleRequest) => {
@@ -35,8 +75,7 @@ const apiRequest = (articleRequest) => {
   fetch(newsAPI + articleRequest, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      data && setDataToCard(data);
-      // console.log('inside data', data);
+      data && createCards(data);
     });
 };
 
@@ -45,11 +84,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   chrome.runtime.sendMessage(
     { message: 'initialise', activeTab },
     (response) => {
-      // console.log(response.articleName);
-      // response.urlKey && setTag('sourceName', response.urlKey);
+      console.log(response);
       response.urlLeaning && setTag('title', response.urlLeaning);
-      apiRequest(articleForRequest(response.articleName));
-      // console.log(jsonResponse);
+      apiRequest(getArticleForRequest(response.articleName));
     }
   );
 });

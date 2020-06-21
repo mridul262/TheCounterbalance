@@ -1,8 +1,9 @@
 const nameToLeanings = {
-  'bbc.com': 'Left',
-  'cnn.com': 'Left',
-  'foxnews.com': 'Right',
+  'bbc.com': 'Left-leaning',
+  'cnn.com': 'Left-leaning',
+  'foxnews.com': 'Right-leaning',
 };
+
 const leaningsToName = { left: ['bbc.com', 'cnn.com'], right: ['foxnews.com'] };
 
 const urlObject = (dataObject) => {
@@ -17,14 +18,13 @@ const urlObject = (dataObject) => {
 let articleName;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'getArticleName') {
-    articleName = request.articleTitle;
+    articleName = request.articleName;
     sendResponse('success');
   }
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === 'initialise') {
-    console.log(request.activeTab.url);
     let urlKey;
     for (i of Object.keys(nameToLeanings)) {
       if (request.activeTab.url.includes(i)) {
@@ -39,6 +39,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       articleName,
     };
     sendResponse(data);
-    // chrome.runtime.sendMessage(data);
   }
 });

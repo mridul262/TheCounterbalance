@@ -1,9 +1,9 @@
-const articleTitle = document.querySelector('h1').innerHTML;
-console.log('articleTitle', articleTitle);
-// const articleTitle = h1Tags[0].innerHTML;
-
 chrome.runtime.sendMessage(
-  { message: 'getArticleName', articleTitle },
+  {
+    message: 'getArticleName',
+    articleName: document.querySelector(`head > meta[property="og:title"]`)
+      .content,
+  },
   (response) => {
     console.log(response);
   }
