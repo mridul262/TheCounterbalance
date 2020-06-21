@@ -91,7 +91,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           apiRequest(getArticleForRequest(response.articleName));
         } else {
           document.getElementById('description').textContent =
-            "Can't find an alternate news sites. Try searching on google.";
+            "Can't find alternate news sites. Try searching on google.";
         }
       } else {
         document.getElementById('title').textContent = "Can't find a leaning";
