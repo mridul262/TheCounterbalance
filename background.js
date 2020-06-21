@@ -9,7 +9,7 @@ const leaningsToName = { left: ['bbc.com', 'cnn.com'], right: ['foxnews.com'] };
 const iconPath = {
   'Left-leaning': './assets/left-leaning-128.png',
   'Right-leaning': './assets/right-leaning-128.png',
-  'invalid': './assets/invalid-128.png',
+  invalid: './assets/invalid-128.png',
 };
 
 const urlObject = (dataObject) => {
@@ -57,10 +57,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 chrome.webNavigation.onCompleted.addListener(({ url }) => {
   const urlKey = findUrlKey(url);
 
-  if (urlKey) {
-    const urlLeaning = nameToLeanings[urlKey];
-    chrome.browserAction.setIcon({ path: iconPath[urlLeaning] });
-  } else {
-    chrome.browserAction.setIcon({ path: iconPath['invalid'] });
-  }
+  const urlLeaning = nameToLeanings[urlKey];
+  chrome.browserAction.setIcon({ path: iconPath[urlLeaning] });
 });
